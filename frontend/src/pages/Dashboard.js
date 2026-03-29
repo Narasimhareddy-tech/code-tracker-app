@@ -26,7 +26,7 @@ const username = storedUser?.username;
   const loadUserData = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/user/${username}` // ✅ FIXED
+        `/api/user/${username}` // ✅ FIXED
       );
 
       const lc = res.data.lcUsername;
@@ -51,7 +51,7 @@ const username = storedUser?.username;
   const fetchStats = async (lc, cc, cf) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/stats?lc=${lc}&cc=${cc}&cf=${cf}`
+        `/api/stats?lc=${lc}&cc=${cc}&cf=${cf}`
       );
 
       setData(res.data);

@@ -154,7 +154,7 @@ router.get("/leaderboard/:username", async (req, res) => {
         if (!f) continue; // ✅ safety
 
         const statsRes = await axios.get(
-          `http://localhost:5000/api/stats?lc=${f.lcUsername}&cc=${f.ccUsername}&cf=${f.cfUsername}`
+          `/api/stats?lc=${f.lcUsername}&cc=${f.ccUsername}&cf=${f.cfUsername}`
         );
 
         leaderboard.push({

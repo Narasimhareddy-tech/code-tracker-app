@@ -15,7 +15,7 @@ function Friends() {
   // 🔹 SEND REQUEST
   const sendRequest = async () => {
     try {
-      await axios.post("http://localhost:5000/api/friends/send-request", {
+      await axios.post("/api/friends/send-request", {
         from: currentUser, // ✅ now correct
         to: sendTo.trim()
       });
@@ -32,7 +32,7 @@ function Friends() {
   const getRequests = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/friends/requests/${currentUser}`
+        `/api/friends/requests/${currentUser}`
       );
 
       setRequests(res.data);
@@ -45,7 +45,7 @@ function Friends() {
   // 🔹 ACCEPT REQUEST
   const acceptRequest = async (fromUser) => {
     try {
-      await axios.post("http://localhost:5000/api/friends/accept-request", {
+      await axios.post("/api/friends/accept-request", {
         from: fromUser,
         to: currentUser
       });
@@ -62,7 +62,7 @@ function Friends() {
   const loadLeaderboard = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/friends/leaderboard/${currentUser}`
+        `/api/friends/leaderboard/${currentUser}`
       );
 
       setLeaderboard(res.data);

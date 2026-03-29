@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 
 const connectDB = require("./config/db");
@@ -12,7 +13,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// 🔥 CONNECT DB (ONLY ONCE)
+// 🔥 CONNECT DB
 connectDB();
 
 // 🔥 ROUTES
@@ -45,10 +46,17 @@ app.get("/", (req, res) => {
   res.send("CodeTracker API running");
 });
 
-// 🔥 PORT (DEFINE BEFORE USE)
-const PORT = process.env.PORT || 5000;
+// 🔥 SERVE FRONTEND (React build)
+app.use(express.static(path.join(__dirname, "frontend", "build")));
 
-// 🔥 START SERVER (LAST LINE)
-app.listen(PORT, () =>
-  console.log(`Server running on port ${PORT}`)
-);
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
+});
+
+// 🔥 PORT (IMPORTANT FOR DEPLOYMENT)
+const PORT = process.env.PORT || 3000;
+
+// 🔥 START SERVER
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

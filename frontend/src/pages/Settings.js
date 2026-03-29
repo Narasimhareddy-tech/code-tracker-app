@@ -21,7 +21,7 @@ function Settings() {
   const loadUserData = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/user/${username}` // ✅ FIXED
+        `/api/user/${username}` // ✅ FIXED
       );
 
       setLc(res.data.lcUsername || "");
@@ -38,7 +38,7 @@ function Settings() {
 
   const save = async () => {
     try {
-      await axios.put("http://localhost:5000/api/user/update", {
+      await axios.put("/api/user/update", {
         username: username, // ✅ FIXED
         lcUsername: lc,
         ccUsername: cc,

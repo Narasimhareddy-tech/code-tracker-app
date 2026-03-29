@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const API = "http://localhost:5000";
+const API = "/api";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -19,7 +19,7 @@ function Login() {
 
     console.log("SENDING:", username, password); // 🔍 debug
 
-    const res = await axios.post("http://localhost:5000/api/auth/login", {
+    const res = await axios.post("/api/auth/login", {
       username: username.trim(),
       password: password.trim(),
     });

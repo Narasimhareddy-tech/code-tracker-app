@@ -21,7 +21,7 @@ function Chat() {
   const loadFriends = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/friends/list/${currentUser}`
+        `/api/friends/list/${currentUser}`
       );
 
       setFriends(res.data || []);
@@ -36,7 +36,7 @@ function Chat() {
       setSelected(friend);
 
       const res = await axios.get(
-        `http://localhost:5000/api/chat/${currentUser}/${friend}`
+        `/api/chat/${currentUser}/${friend}`
       );
 
       setChat(res.data || []);
@@ -51,7 +51,7 @@ function Chat() {
     if (!message.trim() || !selected) return;
 
     try {
-      await axios.post("http://localhost:5000/api/chat/send", {
+      await axios.post("/api/chat/send", {
         from: currentUser,
         to: selected,
         text: message.trim()

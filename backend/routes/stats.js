@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
     // ✅ LeetCode
     if (lcUsername) {
       const leetcode = await axios.get(
-        `http://localhost:5000/api/leetcode/${lcUsername}`
+        `/api/leetcode/${lcUsername}`
       );
       lc = leetcode.data;
     }
@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
     // ✅ CodeChef
     if (ccUsername) {
       const codechef = await axios.get(
-        `http://localhost:5000/api/codechef/${ccUsername}`
+        `/api/codechef/${ccUsername}`
       );
       cc = codechef.data;
     }
@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
     if (cfUsername) {
       try {
         const cfRes = await axios.get(
-          `http://localhost:5000/api/codeforces/${cfUsername}`
+          `/api/codeforces/${cfUsername}`
         );
         cf = cfRes.data;
       } catch {
