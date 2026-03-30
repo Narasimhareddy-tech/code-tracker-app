@@ -53,7 +53,7 @@ app.get("/", (req, res) => {
  // res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
 //});
 
-  PORT (IMPORTANT FOR DEPLOYMENT)
+  //PORT (IMPORTANT FOR DEPLOYMENT)
 const PORT = process.env.PORT || 3000;
 
 //  START SERVER
