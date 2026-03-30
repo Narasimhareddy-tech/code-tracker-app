@@ -42,21 +42,21 @@ const cfRoute = require("./routes/codeforces");
 app.use("/api/codeforces", cfRoute);
 
 // 🔥 TEST ROUTE
-//app.get("/", (req, res) => {
- // res.send("CodeTracker API running");
-//});
-
-// 🔥 SERVE FRONTEND (React build)
-app.use(express.static(path.join(__dirname, "frontend", "build")));
-
-app.get('(.*)', (req, res) => {
-  res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
+app.get("/", (req, res) => {
+  res.send("CodeTracker API running");
 });
 
-// 🔥 PORT (IMPORTANT FOR DEPLOYMENT)
-//const PORT = process.env.PORT || 3000;
+// 🔥 SERVE FRONTEND (React build)
+//app.use(express.static(path.join(__dirname, "frontend", "build")));
+
+//app.get('(.*)', (req, res) => {
+ // res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
+//});
+
+ 🔥 PORT (IMPORTANT FOR DEPLOYMENT)
+const PORT = process.env.PORT || 3000;
 
 // 🔥 START SERVER
-//app.listen(PORT, () => {
- // console.log(`Server running on port ${PORT}`);
+app.listen(PORT, () => {
+ console.log(`Server running on port ${PORT}`);
 //});
