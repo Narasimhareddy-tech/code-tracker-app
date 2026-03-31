@@ -49,7 +49,7 @@ function Dashboard() {
         `/api/stats?lc=${lc}&cc=${cc}&cf=${cf}`
       );
 
-      console.log("🔥 FINAL DATA:", res.data); // DEBUG
+      console.log("🔥 DATA:", res.data); // debug
 
       setData(res.data);
       setLoading(false);
@@ -60,7 +60,7 @@ function Dashboard() {
     }
   };
 
-  // 🔄 LOADING
+  // 🔄 Loading
   if (loading) {
     return (
       <>
@@ -70,14 +70,14 @@ function Dashboard() {
     );
   }
 
-  // ⚠️ NO DATA
-  if (!data || !data.combined) {
+  // ❌ No data safety
+  if (!data) {
     return (
       <>
         <Navbar />
         <div style={{ padding: "20px" }}>
           <h2>Welcome {username}</h2>
-          <p>No stats available. Please check usernames ⚙️</p>
+          <p>No data found. Please set usernames ⚙️</p>
           <button onClick={() => navigate("/settings")}>
             Go to Settings
           </button>
@@ -86,7 +86,12 @@ function Dashboard() {
     );
   }
 
-  // ✅ MAIN UI
+  // ✅ Safe extraction
+  const combined = data?.combined || {};
+  const lcData = data?.leetcode || {};
+  const ccData = data?.codechef || {};
+  const cfData = data?.codeforces || {};
+
   return (
     <>
       <Navbar />
@@ -94,7 +99,7 @@ function Dashboard() {
       <div className="container">
         <h2>Welcome {username} 👋</h2>
 
-        {/* 🔗 Accounts */}
+        {/* Linked Accounts */}
         <div style={{
           marginTop: "20px",
           background: "#020617",
@@ -108,53 +113,53 @@ function Dashboard() {
           <p><b>Codeforces:</b> {data.codeforcesUsername || "Not set"}</p>
         </div>
 
-        {/* 🔥 STATS CARDS */}
+        {/* Stats Cards */}
         <div className="card-container">
           <div className="card">
             <h3>Total</h3>
-            <p>{data.combined.totalSolved || 0}</p>
+            <p>{combined.totalSolved ?? 0}</p>
           </div>
 
           <div className="card">
             <h3>Easy</h3>
-            <p>{data.combined.easy || 0}</p>
+            <p>{combined.easy ?? 0}</p>
           </div>
 
           <div className="card">
             <h3>Medium</h3>
-            <p>{data.combined.medium || 0}</p>
+            <p>{combined.medium ?? 0}</p>
           </div>
 
           <div className="card">
             <h3>Hard</h3>
-            <p>{data.combined.hard || 0}</p>
+            <p>{combined.hard ?? 0}</p>
           </div>
         </div>
 
-        {/* 📊 GRAPH */}
+        {/* Graph */}
         <div className="graph-section">
           <h3>Progress Overview 📊</h3>
-          <StatsChart data={data.combined} />
+          <StatsChart data={combined} />
         </div>
 
-        {/* 🧩 PLATFORM BREAKDOWN */}
+        {/* Platform Cards */}
         <div className="platform-grid">
           <div className="platform-card">
             <h4>LeetCode</h4>
-            <p>Easy: {data.leetcode?.easy || 0}</p>
-            <p>Medium: {data.leetcode?.medium || 0}</p>
-            <p>Hard: {data.leetcode?.hard || 0}</p>
+            <p>Easy: {lcData.easy ?? 0}</p>
+            <p>Medium: {lcData.medium ?? 0}</p>
+            <p>Hard: {lcData.hard ?? 0}</p>
           </div>
 
           <div className="platform-card">
             <h4>CodeChef</h4>
-            <p>Total: {data.codechef?.totalSolved || 0}</p>
-            <p>Rating: {data.codechef?.rating || 0}</p>
+            <p>Total: {ccData.totalSolved ?? 0}</p>
+            <p>Rating: {ccData.rating ?? 0}</p>
           </div>
 
           <div className="platform-card">
             <h4>Codeforces</h4>
-            <p>Total: {data.codeforces?.totalSolved || 0}</p>
+            <p>Total: {cfData.totalSolved ?? 0}</p>
           </div>
         </div>
       </div>
