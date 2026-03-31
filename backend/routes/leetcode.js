@@ -1,10 +1,7 @@
-const express = require("express");
-const axios = require("axios");
+import axios from "axios";
 
-const router = express.Router();
-
-router.get("/:username", async (req, res) => {
-  const username = req.params.username;
+export default async function handler(req, res) {
+  const { username } = req.query;
 
   try {
     const response = await axios.post(
@@ -26,7 +23,16 @@ router.get("/:username", async (req, res) => {
       }
     );
 
-    const stats = response.data.data.matchedUser.submitStats.acSubmissionNum;
+    const user = response.data?.data?.matchedUser;
+
+    // ✅ Handle invalid username
+    if (!user) {
+      return res.status(404).json({
+        error: "User not found on LeetCode"
+      });
+    }
+
+    const stats = user.submitStats.acSubmissionNum;
 
     let result = { easy: 0, medium: 0, hard: 0 };
 
@@ -36,11 +42,14 @@ router.get("/:username", async (req, res) => {
       if (item.difficulty === "Hard") result.hard = item.count;
     });
 
-    res.json(result);
+    res.status(200).json(result);
 
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch LeetCode data" });
-  }
-});
+    console.error("❌ LC ERROR:", error.message);
 
-module.exports = router;
+    res.status(500).json({
+      error: "Failed to fetch LeetCode data",
+      details: error.message
+    });
+  }
+}
