@@ -1,16 +1,21 @@
-const express = require("express");
-const axios = require("axios");
-const router = express.Router();
+import axios from "axios";
 
-router.get("/:username", async (req, res) => {
+export default async function handler(req, res) {
+  const { username } = req.query;
+
   try {
-    const { username } = req.params;
-
     const response = await axios.get(
       `https://codeforces.com/api/user.status?handle=${username}`
     );
 
-    const submissions = response.data.result;
+    const submissions = response.data?.result;
+
+    // ✅ Handle invalid user
+    if (!submissions) {
+      return res.status(404).json({
+        error: "User not found on Codeforces"
+      });
+    }
 
     const solved = new Set();
 
@@ -20,14 +25,16 @@ router.get("/:username", async (req, res) => {
       }
     });
 
-    res.json({
+    res.status(200).json({
       totalSolved: solved.size
     });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "CF fetch failed" });
-  }
-});
+    console.error("❌ CF ERROR:", err.message);
 
-module.exports = router;
+    res.status(500).json({
+      error: "CF fetch failed",
+      details: err.message
+    });
+  }
+}
