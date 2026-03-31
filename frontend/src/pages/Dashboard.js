@@ -10,9 +10,8 @@ function Dashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ FIX: parse user properly
   const storedUser = JSON.parse(localStorage.getItem("user"));
-const username = storedUser?.username;
+  const username = storedUser?.username;
 
   useEffect(() => {
     if (!username) {
@@ -25,22 +24,18 @@ const username = storedUser?.username;
 
   const loadUserData = async () => {
     try {
-      const res = await axios.get(
-        `/api/user/${username}` // ✅ FIXED
-      );
+      const res = await axios.get(`/api/user/${username}`);
 
       const lc = res.data.lcUsername;
       const cc = res.data.ccUsername;
       const cf = res.data.cfUsername;
-
-      console.log("LC:", lc, "CC:", cc, "CF:", cf);
 
       if (!lc && !cc && !cf) {
         setLoading(false);
         return;
       }
 
-      fetchStats(lc, cc, cf);
+      await fetchStats(lc, cc, cf);
 
     } catch (err) {
       console.error("USER FETCH ERROR:", err.response?.data || err.message);
@@ -53,6 +48,8 @@ const username = storedUser?.username;
       const res = await axios.get(
         `/api/stats?lc=${lc}&cc=${cc}&cf=${cf}`
       );
+
+      console.log("🔥 FINAL DATA:", res.data); // DEBUG
 
       setData(res.data);
       setLoading(false);
@@ -73,14 +70,14 @@ const username = storedUser?.username;
     );
   }
 
-  // ⚠️ NO USERNAME SET
-  if (!data) {
+  // ⚠️ NO DATA
+  if (!data || !data.combined) {
     return (
       <>
         <Navbar />
         <div style={{ padding: "20px" }}>
           <h2>Welcome {username}</h2>
-          <p>Please set your usernames in Settings ⚙️</p>
+          <p>No stats available. Please check usernames ⚙️</p>
           <button onClick={() => navigate("/settings")}>
             Go to Settings
           </button>
@@ -97,6 +94,7 @@ const username = storedUser?.username;
       <div className="container">
         <h2>Welcome {username} 👋</h2>
 
+        {/* 🔗 Accounts */}
         <div style={{
           marginTop: "20px",
           background: "#020617",
@@ -110,53 +108,53 @@ const username = storedUser?.username;
           <p><b>Codeforces:</b> {data.codeforcesUsername || "Not set"}</p>
         </div>
 
-        {/* 🔥 CARDS */}
+        {/* 🔥 STATS CARDS */}
         <div className="card-container">
           <div className="card">
             <h3>Total</h3>
-            <p>{data.combined.totalSolved}</p>
+            <p>{data.combined.totalSolved || 0}</p>
           </div>
 
           <div className="card">
             <h3>Easy</h3>
-            <p>{data.combined.easy}</p>
+            <p>{data.combined.easy || 0}</p>
           </div>
 
           <div className="card">
             <h3>Medium</h3>
-            <p>{data.combined.medium}</p>
+            <p>{data.combined.medium || 0}</p>
           </div>
 
           <div className="card">
             <h3>Hard</h3>
-            <p>{data.combined.hard}</p>
+            <p>{data.combined.hard || 0}</p>
           </div>
         </div>
 
         {/* 📊 GRAPH */}
         <div className="graph-section">
           <h3>Progress Overview 📊</h3>
-          <StatsChart data={data} />
+          <StatsChart data={data.combined} />
         </div>
 
-        {/* 🧩 PLATFORMS */}
+        {/* 🧩 PLATFORM BREAKDOWN */}
         <div className="platform-grid">
           <div className="platform-card">
             <h4>LeetCode</h4>
-            <p>Easy: {data.leetcode.easy}</p>
-            <p>Medium: {data.leetcode.medium}</p>
-            <p>Hard: {data.leetcode.hard}</p>
+            <p>Easy: {data.leetcode?.easy || 0}</p>
+            <p>Medium: {data.leetcode?.medium || 0}</p>
+            <p>Hard: {data.leetcode?.hard || 0}</p>
           </div>
 
           <div className="platform-card">
             <h4>CodeChef</h4>
-            <p>Total: {data.codechef.totalSolved}</p>
-            <p>Rating: {data.codechef.rating}</p>
+            <p>Total: {data.codechef?.totalSolved || 0}</p>
+            <p>Rating: {data.codechef?.rating || 0}</p>
           </div>
 
           <div className="platform-card">
             <h4>Codeforces</h4>
-            <p>Total: {data.codeforces.totalSolved}</p>
+            <p>Total: {data.codeforces?.totalSolved || 0}</p>
           </div>
         </div>
       </div>
