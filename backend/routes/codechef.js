@@ -1,11 +1,8 @@
-const express = require("express");
-const axios = require("axios");
-const cheerio = require("cheerio");
+import axios from "axios";
+import cheerio from "cheerio";
 
-const router = express.Router();
-
-router.get("/:username", async (req, res) => {
-  const username = req.params.username;
+export default async function handler(req, res) {
+  const { username } = req.query;
 
   try {
     const { data } = await axios.get(
@@ -14,7 +11,7 @@ router.get("/:username", async (req, res) => {
 
     const $ = cheerio.load(data);
 
-    // Problems solved (approx)
+    // ✅ Problems solved
     const problemsSolvedText = $("section.problems-solved h5").text();
 
     let totalSolved = 0;
@@ -24,17 +21,21 @@ router.get("/:username", async (req, res) => {
       if (match) totalSolved = parseInt(match[0]);
     }
 
-    // Rating
-    const rating = $(".rating-number").text();
+    // ✅ Rating
+    const ratingText = $(".rating-number").first().text();
+    const rating = parseInt(ratingText) || 0;
 
-    res.json({
+    res.status(200).json({
       totalSolved,
-      rating: parseInt(rating) || 0
+      rating
     });
 
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch CodeChef data" });
-  }
-});
+    console.error("❌ CodeChef ERROR:", error.message);
 
-module.exports = router;
+    res.status(500).json({
+      error: "Failed to fetch CodeChef data",
+      details: error.message
+    });
+  }
+}
