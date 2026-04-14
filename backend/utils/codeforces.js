@@ -12,12 +12,14 @@ async function getCodeforcesStats(username) {
 
     const solvedSet = new Set();
 
-    res.data.result.forEach(sub => {
+    for (const sub of res.data.result) {
       if (sub.verdict === "OK") {
         const id = sub.problem.contestId + "-" + sub.problem.index;
         solvedSet.add(id);
       }
-    });
+    }
+
+    console.log("CF SOLVED COUNT:", solvedSet.size); // 🔥 DEBUG
 
     return {
       totalSolved: solvedSet.size,
@@ -27,7 +29,6 @@ async function getCodeforcesStats(username) {
     console.log("CF ERROR:", err.message);
     return { totalSolved: 0 };
   }
-  console.log("CF RAW:", res.data);
 }
 
 module.exports = getCodeforcesStats;
