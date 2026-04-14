@@ -27,6 +27,7 @@ async function getCodeforcesStats(username) {
     console.log("CF ERROR:", err.message);
     return { totalSolved: 0 };
   }
+  console.log("CF RAW:", res.data);
 }
 
 module.exports = getCodeforcesStats;
