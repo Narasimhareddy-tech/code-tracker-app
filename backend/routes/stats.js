@@ -1,6 +1,7 @@
+console.log("🔥 STATS FILE RUNNING");
+
 const express = require("express");
 const router = express.Router(); // ✅ ADD THIS
-console.log("🔥 STATS FILE RUNNING");
 const getLeetCodeStats = require("../utils/leetcode");
 const getCodeforcesStats = require("../utils/codeforces");
 const getCodechefStats = require("../utils/codechef");
