@@ -11,6 +11,7 @@ function Login() {
   const navigate = useNavigate();
 
   const login = async () => {
+    console.log("NEW VERSION 🚀");
   try {
     if (!username || !password) {
       alert("Enter username & password");
