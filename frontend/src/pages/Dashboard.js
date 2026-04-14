@@ -49,16 +49,18 @@ const username = storedUser?.username;
   };
 
   const fetchStats = async (lc, cc, cf) => {
-    try {
-      const res = await axios.get(
-        `/api/stats?lc=${lc}&cc=${cc}&cf=${cf}`
-      );
+  try {
+    const res = await axios.get(
+      `/api/stats?lc=${lc}&cc=${cc}&cf=${cf}`
+    );
 
-      setData(res.data);
-      setLoading(false);
+    console.log("STATS RESPONSE:", res.data); // 👈 ADD HERE
 
-    } catch (err) {
-      console.error("STATS ERROR:", err.response?.data || err.message);
+    setData(res.data);
+    setLoading(false);
+
+  } catch (err) {
+      console.error("STATS ERROR FULL:", err); // 👈 REPLACE
       setLoading(false);
     }
   };
