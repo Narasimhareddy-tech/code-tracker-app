@@ -6,13 +6,23 @@ async function getCodeforcesStats(username) {
       `https://codeforces.com/api/user.status?handle=${username}`
     );
 
-    const solved = new Set(
-      res.data.result.map(q => q.problem.contestId + "-" + q.problem.index)
-    );
+    if (res.data.status !== "OK") {
+      return { totalSolved: 0 };
+    }
+
+    const solvedSet = new Set();
+
+    res.data.result.forEach(sub => {
+      if (sub.verdict === "OK") {
+        const id = sub.problem.contestId + "-" + sub.problem.index;
+        solvedSet.add(id);
+      }
+    });
 
     return {
-      totalSolved: solved.size,
+      totalSolved: solvedSet.size,
     };
+
   } catch (err) {
     console.log("CF ERROR:", err.message);
     return { totalSolved: 0 };
