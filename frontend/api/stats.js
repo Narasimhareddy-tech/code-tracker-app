@@ -72,13 +72,24 @@ export default async function handler(req, res) {
       }
     }
 
-    // ⚠️ CODECHEF (basic for now)
-    if (cc) {
-      codechef = {
-        totalSolved: 0,
-        rating: 0
-      };
-    }
+    // 🔥 CODECHEF (using API)
+if (cc) {
+  try {
+    const response = await fetch(
+      `https://competitive-coding-api.herokuapp.com/api/codechef/${cc}`
+    );
+
+    const data = await response.json();
+
+    codechef = {
+      totalSolved: data.fully_solved?.count || 0,
+      rating: data.rating || 0
+    };
+
+  } catch (err) {
+    console.log("CC ERROR:", err.message);
+  }
+}
 
     // 🔥 COMBINE
     const combined = {
