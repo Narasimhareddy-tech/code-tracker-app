@@ -3,20 +3,21 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 
 function Friends() {
-  // ✅ FIX: parse user properly
+  // ✅ Safe user parsing
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const currentUser = storedUser?.username;
 
   const [sendTo, setSendTo] = useState("");
   const [requests, setRequests] = useState([]);
-  const [leaderboard, setLeaderboard] = useState([]);
   const [activeTab, setActiveTab] = useState("requests");
 
   // 🔹 SEND REQUEST
   const sendRequest = async () => {
+    if (!sendTo.trim()) return;
+
     try {
       await axios.post("/api/friends/send-request", {
-        from: currentUser, // ✅ now correct
+        from: currentUser,
         to: sendTo.trim()
       });
 
@@ -30,12 +31,14 @@ function Friends() {
 
   // 🔹 GET REQUESTS
   const getRequests = async () => {
+    if (!currentUser) return;
+
     try {
       const res = await axios.get(
         `/api/friends/requests/${currentUser}`
       );
 
-      setRequests(res.data);
+      setRequests(res.data || []);
     } catch (err) {
       console.error(err);
       alert("Error loading requests");
@@ -51,39 +54,16 @@ function Friends() {
       });
 
       getRequests();
-      loadLeaderboard();
     } catch (err) {
       console.error(err);
       alert("Error accepting request");
     }
   };
 
-  // 🔹 LOAD LEADERBOARD
-  const loadLeaderboard = async () => {
-    try {
-      const res = await axios.get(
-        `/api/friends/leaderboard/${currentUser}`
-      );
-
-      setLeaderboard(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // 🔹 MEDALS
-  const getMedal = (i) => {
-    if (i === 0) return "🥇";
-    if (i === 1) return "🥈";
-    if (i === 2) return "🥉";
-    return "";
-  };
-
   // 🔹 AUTO LOAD
   useEffect(() => {
-    if (!currentUser) return; // ✅ safety
+    if (!currentUser) return;
     getRequests();
-    loadLeaderboard();
   }, [currentUser]);
 
   return (
@@ -103,63 +83,22 @@ function Friends() {
           <button onClick={sendRequest}>Send Request</button>
         </div>
 
-        {/* 🔀 TABS */}
+        {/* 🔀 TABS (only requests now) */}
         <div className="tabs">
-          <button
-            className={activeTab === "requests" ? "active" : ""}
-            onClick={() => setActiveTab("requests")}
-          >
-            Requests
-          </button>
-
-          <button
-            className={activeTab === "leaderboard" ? "active" : ""}
-            onClick={() => setActiveTab("leaderboard")}
-          >
-            Leaderboard
-          </button>
+          <button className="active">Requests</button>
         </div>
 
         {/* 📥 REQUESTS */}
-        {activeTab === "requests" && (
-          <div>
-            {requests.length === 0 && <p>No requests</p>}
+        <div>
+          {requests.length === 0 && <p>No requests</p>}
 
-            {requests.map((r, i) => (
-              <div className="list-item" key={i}>
-                <span>{r}</span>
-                <button onClick={() => acceptRequest(r)}>Accept</button>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* 🏆 LEADERBOARD */}
-        {activeTab === "leaderboard" && (
-          <div>
-            {leaderboard.length === 0 && <p>No friends yet</p>}
-
-            {leaderboard.map((f, i) => (
-              <div
-                className="leaderboard-item"
-                key={i}
-                style={{
-                  background:
-                    f.username === currentUser ? "#1e293b" : "#020617"
-                }}
-              >
-                <div>
-                  <span className="rank">
-                    {getMedal(i)} #{i + 1}
-                  </span>
-                  <span>{f.username}</span>
-                </div>
-
-                <span>{f.total} solved</span>
-              </div>
-            ))}
-          </div>
-        )}
+          {requests.map((r, i) => (
+            <div className="list-item" key={i}>
+              <span>{r}</span>
+              <button onClick={() => acceptRequest(r)}>Accept</button>
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );
