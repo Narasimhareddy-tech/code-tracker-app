@@ -19,7 +19,7 @@ function Login() {
 
     console.log("SENDING:", username, password); // 🔍 debug
 
-    const res = await axios.post("/api/auth/login", {
+    const res = await axios.post(`${API}/auth/login`, {
       username: username.trim(),
       password: password.trim(),
     });
@@ -38,7 +38,7 @@ function Login() {
 
   const register = async () => {
     try {
-      await axios.post(`${API}/api/auth/register`, {
+      await axios.post(`${API}/auth/register`, {
         username: username.trim(),
         password: password.trim(),
       });
