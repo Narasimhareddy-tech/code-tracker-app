@@ -1,6 +1,7 @@
 const axios = require("axios");
 
 async function getCodeforcesStats(username) {
+    console.log("🔥 CF FUNCTION CALLED"); 
   try {
     const res = await axios.get(
       `https://codeforces.com/api/user.status?handle=${username}`
