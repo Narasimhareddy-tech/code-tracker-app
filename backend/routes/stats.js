@@ -1,13 +1,9 @@
 const express = require("express");
-const axios = require("axios");
+const router = express.Router(); // ✅ ADD THIS
 
-const router = express.Router();
-
-// ✅ Auto-detect base URL (works on Vercel + local)
-const BASE_URL =
-  process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:5000";
+const getLeetCodeStats = require("../utils/leetcode");
+const getCodeforcesStats = require("../utils/codeforces");
+const getCodechefStats = require("../utils/codechef");
 
 router.get("/", async (req, res) => {
   const lcUsername = req.query.lc;
@@ -22,10 +18,7 @@ router.get("/", async (req, res) => {
     // ✅ LeetCode
     if (lcUsername) {
       try {
-        const leetcode = await axios.get(
-          `${BASE_URL}/api/leetcode/${lcUsername}`
-        );
-        lc = leetcode.data;
+        lc = await getLeetCodeStats(lcUsername);
       } catch (err) {
         console.log("LC fetch failed:", err.message);
       }
@@ -34,10 +27,7 @@ router.get("/", async (req, res) => {
     // ✅ CodeChef
     if (ccUsername) {
       try {
-        const codechef = await axios.get(
-          `${BASE_URL}/api/codechef/${ccUsername}`
-        );
-        cc = codechef.data;
+        cc = await getCodechefStats(ccUsername);
       } catch (err) {
         console.log("CC fetch failed:", err.message);
       }
@@ -46,16 +36,13 @@ router.get("/", async (req, res) => {
     // ✅ Codeforces
     if (cfUsername) {
       try {
-        const cfRes = await axios.get(
-          `${BASE_URL}/api/codeforces/${cfUsername}`
-        );
-        cf = cfRes.data;
+        cf = await getCodeforcesStats(cfUsername);
       } catch (err) {
         console.log("CF fetch failed:", err.message);
       }
     }
 
-    // ✅ Combine stats safely
+    // ✅ Combine stats
     const totalEasy =
       (lc.easy || 0) +
       Math.floor((cc.totalSolved || 0) * 0.4) +
@@ -93,7 +80,7 @@ router.get("/", async (req, res) => {
     console.error("❌ STATS ERROR:", error);
     res.status(500).json({
       error: "Failed to fetch stats",
-      details: error.message, // 🔥 helps debugging
+      details: error.message,
     });
   }
 });
