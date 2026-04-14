@@ -28,12 +28,17 @@ async function getLeetCodeStats(username) {
       if (s.difficulty === "Hard") hard = s.count;
     });
 
-    return { easy, medium, hard };
+    return {
+      easy,
+      medium,
+      hard,
+      totalSolved: easy + medium + hard
+    };
 
   } catch (err) {
     console.log("LC ERROR:", err.message);
-    return { easy: 0, medium: 0, hard: 0 };
+    return { easy: 0, medium: 0, hard: 0, totalSolved: 0 };
   }
 }
 
-module.exports = getLeetCodeStats;
+module.exports = { getLeetCodeStats };
